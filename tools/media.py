@@ -54,7 +54,6 @@ FOTOS = {
     "franklin": ("DesZvG1t-kb-0", (0, 600, 675, 1687), 900),
     "lucas": ("Desa6KJt36i-0", (0, 625, 660, 1687), 900),
     "laysa": ("DesHhuOzMRG-0", (0, 660, 640, 1687), 900),
-    "melina-circulo": ("DesZQ6Ntmlo-0", (186, 610, 626, 1050), 600),
     "melina-azul": ("DY4x8dpgxVC-0", (68, 456, 742, 1350), 800),
     "coroa": ("DagiLBNv5rx-0", None, 1200),
     "restauracao-1": ("DZuqAsIjh-G-0", None, 1000),
@@ -76,6 +75,7 @@ FOTOS = {
 # quadros parados tirados dos vídeos: nome: (id, segundo, recorte)
 STILLS = {
     "melina-sorriso": ("DasonEkuOTm", 0.4, (0, 0, 720, 720)),
+    # círculo do hero: gerado à mão com eq de brilho (crop=600:600:60:40 em 0.6 s)
     "recepcao": ("Da5pksku9-i", 25, (0, 330, 720, 1080)),
     "fachada": ("Da5pksku9-i", 13, (0, 300, 720, 1100)),
     "protese": ("DeznLfhzDHL", 3, (124, 448, 596, 920)),
