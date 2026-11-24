@@ -11,7 +11,7 @@
 
   /* ---------- Cabeçalho, progresso e paralaxe ---------- */
   var header = $(".site-header"), bar = $(".progress-bar"), wa = $(".wa-float"), last = 0;
-  var heroMove = $(".arch");
+  var heroMove = $(".hero-bg");
   function onScroll() {
     var y = window.scrollY, h = doc.scrollHeight - window.innerHeight;
     header.classList.toggle("is-solid", y > 40);
@@ -20,7 +20,7 @@
     last = y;
     if (bar) bar.style.setProperty("--p", h > 0 ? (y / h).toFixed(4) : 0);
     if (wa) wa.classList.toggle("show", y > window.innerHeight * .6 || document.body.getAttribute("data-page") !== "index");
-    if (!reduce && heroMove && y < window.innerHeight * 1.3) heroMove.style.setProperty("--hy", (y * 0.06).toFixed(1) + "px");
+    if (!reduce && heroMove && y < window.innerHeight * 1.3) heroMove.style.setProperty("--hy", (y * 0.3).toFixed(1) + "px");
     fill();
     sweep();
   }
@@ -163,6 +163,51 @@
       once.observe(c);
     }
   });
+
+  /* ---------- Brilho no hero: partículas de luz que sobem e faíscas no cursor ---------- */
+  var cv = $(".hero-sparks");
+  if (cv && !reduce) {
+    var ctx = cv.getContext("2d"), dpr = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0, parts = [], running = true;
+    var COLORS = ["255,254,250", "216,222,192", "212,190,140", "162,173,116"];
+    var size = function () { W = cv.offsetWidth; H = cv.offsetHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+    size(); window.addEventListener("resize", size);
+    var spawn = function (x, y, burst) {
+      parts.push({ x: x, y: y, vx: (Math.random() - .5) * (burst ? 1.4 : .2), vy: burst ? (Math.random() - .7) * 1.2 : -(.12 + Math.random() * .35),
+        r: burst ? .6 + Math.random() * 1.6 : .5 + Math.random() * 1.6, life: 0, max: burst ? 50 + Math.random() * 50 : 300 + Math.random() * 300,
+        c: COLORS[(Math.random() * COLORS.length) | 0], tw: Math.random() * 6.28, star: Math.random() < .18 });
+    };
+    var N = mobile() ? 40 : 90;
+    for (var k = 0; k < N; k++) { spawn(Math.random() * W, Math.random() * H, false); parts[k].life = Math.random() * parts[k].max; }
+    var heroEl = $(".hero"), lastSpawn = 0;
+    heroEl.addEventListener("pointermove", function (e) {
+      var r = cv.getBoundingClientRect(), now = performance.now();
+      if (now - lastSpawn < 20) return; lastSpawn = now;
+      for (var q = 0; q < 3; q++) spawn(e.clientX - r.left + (Math.random() - .5) * 16, e.clientY - r.top + (Math.random() - .5) * 16, true);
+    });
+    var star = function (x, y, s) {
+      ctx.beginPath(); ctx.moveTo(x, y - s * 3); ctx.lineTo(x + s * .6, y - s * .6); ctx.lineTo(x + s * 3, y); ctx.lineTo(x + s * .6, y + s * .6);
+      ctx.lineTo(x, y + s * 3); ctx.lineTo(x - s * .6, y + s * .6); ctx.lineTo(x - s * 3, y); ctx.lineTo(x - s * .6, y - s * .6); ctx.closePath(); ctx.fill();
+    };
+    var tick = function () {
+      if (!running) return;
+      ctx.clearRect(0, 0, W, H);
+      for (var n = parts.length - 1; n >= 0; n--) {
+        var p = parts[n];
+        p.life++; p.x += p.vx; p.y += p.vy; p.vx *= .996; p.tw += .07;
+        var lf = p.life / p.max, al = Math.sin(Math.PI * lf) * (.35 + .5 * Math.abs(Math.sin(p.tw)));
+        if (p.life >= p.max || p.y < -10) {
+          if (p.max > 200 && parts.length < N + 10) { p.x = Math.random() * W; p.y = H + 5; p.life = 0; continue; }
+          parts.splice(n, 1); continue;
+        }
+        ctx.fillStyle = "rgba(" + p.c + "," + al.toFixed(3) + ")";
+        if (p.star) star(p.x, p.y, p.r * .9); else { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill(); }
+      }
+      if (parts.length > 320) parts.splice(0, parts.length - 320);
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    if (hasIO) new IntersectionObserver(function (es) { var vis = es[0].isIntersecting; if (vis && !running) { running = true; requestAnimationFrame(tick); } running = vis; }).observe(cv);
+  }
 
   /* ---------- Vitrine de reels: setas e arrastar ---------- */
   $$("[data-rail]").forEach(function (rail) {

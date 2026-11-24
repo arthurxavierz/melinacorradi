@@ -42,6 +42,11 @@ HERO = [
     ("DagDDjMzj0t", 3.5, 0, 430, 720),
 ]
 CLIP, FADE = 3.2, 0.7
+# fundo do hero em tela cheia: (id, início, y) faixa 720x405 do quadro vertical, fora dos textos do post
+HERO_WIDE = [
+    ("Db6jGPLPTpu", 1.0, 400), ("DfXwjb7TOo5", 2.5, 600), ("DeznLfhzDHL", 1.5, 480), ("Da5pksku9-i", 22.0, 420),
+    ("DfYAXrGz4VZ", 0.4, 60), ("DfpK3YQz5Sw", 6.0, 600), ("DagDDjMzj0t", 3.5, 520), ("DaYDmyMuWdY", 7.0, 400),
+]
 
 # nome: (arquivo original, recorte (x0, y0, x1, y1) ou None, largura máxima)
 FOTOS = {
@@ -49,6 +54,7 @@ FOTOS = {
     "franklin": ("DesZvG1t-kb-0", (0, 600, 675, 1687), 900),
     "lucas": ("Desa6KJt36i-0", (0, 625, 660, 1687), 900),
     "laysa": ("DesHhuOzMRG-0", (0, 660, 640, 1687), 900),
+    "melina-circulo": ("DesZQ6Ntmlo-0", (186, 610, 626, 1050), 600),
     "melina-azul": ("DY4x8dpgxVC-0", (68, 456, 742, 1350), 800),
     "coroa": ("DagiLBNv5rx-0", None, 1200),
     "restauracao-1": ("DZuqAsIjh-G-0", None, 1000),
@@ -115,8 +121,28 @@ def hero():
     print("ok hero")
 
 
+def hero_wide():
+    p = OUT / "video" / "hero-bg.mp4"
+    if not need(p):
+        return
+    ins, parts = [], []
+    for k, (rid, ss, y) in enumerate(HERO_WIDE):
+        ins += ["-ss", str(ss), "-t", str(CLIP), "-i", str(RAW / f"{rid}.mp4")]
+        parts.append(f"[{k}:v]crop=720:405:0:{y},scale=1280:720:flags=lanczos,unsharp=5:5:0.6,setsar=1,fps=30,format=yuv420p,trim=duration={CLIP},setpts=PTS-STARTPTS[v{k}]")
+    chain, prev, off = [], "v0", 0.0
+    for k in range(1, len(HERO_WIDE)):
+        off += CLIP - FADE
+        chain.append(f"[{prev}][v{k}]xfade=transition=fade:duration={FADE}:offset={off:.2f}[x{k}]")
+        prev = f"x{k}"
+    run([*ins, "-filter_complex", ";".join(parts + chain), "-map", f"[{prev}]", "-an", "-c:v", "libx264", "-crf", "28", "-preset", "slow",
+         "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(p)])
+    run(["-ss", "0.3", "-i", str(p), "-frames:v", "1", "-q:v", "3", str(p.with_suffix(".jpg"))])
+    print("ok hero-bg")
+
+
 def main():
     hero()
+    hero_wide()
     for rid, (ss, cover) in REELS.items():
         src = str(RAW / f"{rid}.mp4")
         prev = OUT / "video" / "p" / f"{rid}.mp4"

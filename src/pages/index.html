@@ -1,7 +1,11 @@
 <!--meta {"title": "Dra. Melina Corradi | Dentista em Mateus Leme, MG", "description": "Dra. Melina Corradi, cirurgiã-dentista em Mateus Leme (CRO-MG 47295). Clareamento, implantes, próteses, ortodontia e limpeza com atendimento humanizado. Agende sua avaliação pelo WhatsApp.", "nav": "index"} -->
 
 <section class="hero" aria-labelledby="hero-t">
-  <div class="hero-blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="hero-bg" aria-hidden="true">
+    <video muted loop playsinline autoplay preload="none" poster="assets/video/hero-bg.jpg" data-desktop="assets/video/hero-bg.mp4"></video>
+  </div>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <canvas class="hero-sparks" aria-hidden="true"></canvas>
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <p class="label pill"><span class="dot-live"></span>Cirurgiã-dentista · Mateus Leme, MG</p>
@@ -12,8 +16,8 @@
       </h1>
       <p class="lead">Atendimento humanizado, diagnóstico transparente e tratamentos planejados para um resultado bonito, natural e duradouro.</p>
       <div class="btn-row">
-        <a class="btn" href="agendamento.html">Agendar avaliação {{ARROW}}</a>
-        <a class="btn btn-line" href="tratamentos.html">Conhecer tratamentos</a>
+        <a class="btn btn-light" href="agendamento.html">Agendar avaliação {{ARROW}}</a>
+        <a class="btn btn-line light" href="tratamentos.html">Conhecer tratamentos</a>
       </div>
       <ul class="hero-trust">
         <li>{{ICON:award}}<span><b>{{CRO}}</b>Responsável técnica</span></li>
@@ -23,13 +27,14 @@
     </div>
 
     <div class="hero-visual">
-      <div class="arch">
-        <video muted loop playsinline autoplay preload="none" poster="assets/video/hero.jpg" data-desktop="assets/video/hero.mp4" aria-hidden="true"></video>
-        <span class="arch-shine" aria-hidden="true"></span>
-      </div>
-      <div class="badge-rot" aria-hidden="true">
-        <svg viewBox="0 0 120 120"><defs><path id="circ" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs><text><textPath href="#circ">Melina Corradi · Odontologia · Mateus Leme ·</textPath></text></svg>
-        <b>{{ICON:tooth}}</b>
+      <div class="portrait-orbit">
+        <svg class="ring-text" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="circ" d="M100 100m-90 0a90 90 0 1 1 180 0a90 90 0 1 1-180 0"/></defs><text><textPath href="#circ">Dra. Melina Corradi ✦ Cirurgiã-dentista ✦ CRO-MG 47295 ✦ Mateus Leme ✦</textPath></text></svg>
+        <span class="orbit-line" aria-hidden="true"><i></i></span>
+        <div class="portrait">
+          <img src="assets/img/fotos/melina-circulo.jpg" alt="Dra. Melina Corradi sorrindo" width="600" height="600">
+          <span class="portrait-shine" aria-hidden="true"></span>
+        </div>
+        <span class="portrait-tag"><b>Dra. Melina Corradi</b>Responsável técnica e protesista</span>
       </div>
       <div class="float-card fc1" aria-hidden="true">
         <span class="fc-ic">{{ICON:sparkle}}</span>
